@@ -1,0 +1,44 @@
+<div class="header-navigation">
+  <nav class="navigation-menu">
+    <a routerLink="/home">Inicio</a>
+    <a routerLink="/services">Servicios</a>
+    <a routerLink="/memberships">Membresías</a>
+    <a routerLink="/contact">Contacto</a>
+  </nav>
+  
+  <nav class="auth-menu">
+    <a routerLink="/login">Iniciar Sesión</a>
+    <a routerLink="/register">Registrarse</a>
+  </nav>
+</div>
+
+<section class="hero-section">
+  <h1>FitZone - Tu camino hacia una vida más saludable</h1>
+  <p>Transforma tu cuerpo, mente y espíritu</p>
+  <button class="main-button" (click)="navigateToRegister()">Únete Ahora</button>
+</section>
+
+<section class="memberships-section">
+  <h2>Nuestras Membresías</h2>
+  <div class="membership-cards">
+    <div class="membership-card" *ngFor="let membership of memberships">
+      <h3>{{ membership.title }}</h3>
+      <div class="price">{{ membership.price }}</div>
+      <ul>
+        <li *ngFor="let feature of membership.features">
+          {{ feature }}
+        </li>
+      </ul>
+      <button class="main-button" (click)="navigateToRegister()">
+        Seleccionar Plan
+      </button>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="slogan">Empieza a mejorar tu salud hoy</div>
+  <button class="cta-button" (click)="navigateToRegister()">
+    ¡EMPIEZA YA!
+  </button>
+</footer>

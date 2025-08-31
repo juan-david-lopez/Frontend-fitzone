@@ -1,0 +1,197 @@
+<div class="dashboard-container">
+      <!-- Header -->
+      <header class="dashboard-header">
+        <div class="header-content">
+          <div class="user-info">
+            <div class="avatar">
+              <span class="avatar-text">{{ getUserInitials() }}</span>
+            </div>
+            <div class="user-details">
+              <h2 class="user-name">¡Hola, {{ userName }}!</h2>
+              <p class="user-email">{{ userEmail }}</p>
+            </div>
+          </div>
+          <button class="logout-btn" (click)="logout()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <polyline points="16,17 21,12 16,7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Cerrar Sesión
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="dashboard-main">
+        <!-- Membership Status Card -->
+        <section class="membership-section">
+          <div class="section-header">
+            <h3>Estado de Membresía</h3>
+          </div>
+          
+          <div class="membership-card" [ngClass]="membershipStatus.isActive ? 'active' : 'inactive'">
+            <div class="membership-status-indicator">
+              <div class="status-icon" [ngClass]="membershipStatus.isActive ? 'active' : 'inactive'">
+                <svg *ngIf="membershipStatus.isActive" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" fill="#10B981"/>
+                  <path d="m9 12 2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <svg *ngIf="!membershipStatus.isActive" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" fill="#EF4444"/>
+                  <line x1="15" y1="9" x2="9" y2="15" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                  <line x1="9" y1="9" x2="15" y2="15" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="status-text">
+                <h4>{{ membershipStatus.isActive ? 'Membresía Activa' : 'Sin Membresía Activa' }}</h4>
+                <p *ngIf="membershipStatus.isActive" class="expiry-date">
+                  Vence el {{ membershipStatus.expiryDate }}
+                </p>
+                <p *ngIf="!membershipStatus.isActive" class="no-membership">
+                  Adquiere una membresía para acceder a todos los beneficios
+                </p>
+              </div>
+            </div>
+            
+            <div class="membership-actions">
+              <button 
+                *ngIf="!membershipStatus.isActive" 
+                class="btn-primary membership-btn"
+                (click)="navigateToMemberships()">
+                Adquirir Membresía
+              </button>
+              
+              <button 
+                *ngIf="membershipStatus.isActive" 
+                class="btn-secondary membership-btn"
+                (click)="navigateToMemberships()">
+                Ver Detalles
+              </button>
+              
+              <button 
+                *ngIf="membershipStatus.isActive" 
+                class="btn-outline membership-btn"
+                (click)="navigateToMemberships()">
+                Renovar
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="quick-actions-section">
+          <div class="section-header">
+            <h3>Acciones Rápidas</h3>
+          </div>
+          
+          <div class="quick-actions-grid">
+            <div class="action-card" (click)="navigateToProfile()">
+              <div class="action-icon profile">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <h4>Mi Perfil</h4>
+              <p>Configurar información personal</p>
+            </div>
+
+            <div class="action-card" (click)="navigateToStats()">
+              <div class="action-icon stats">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M3 3v18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <h4>Estadísticas</h4>
+              <p>Ver progreso y métricas</p>
+            </div>
+
+            <div class="action-card" (click)="navigateToMemberships()">
+              <div class="action-icon membership">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <rect x="1" y="4" width="22" height="16" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+                  <line x1="1" y1="10" x2="23" y2="10" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <h4>Membresías</h4>
+              <p>Gestionar planes y pagos</p>
+            </div>
+
+            <div class="action-card" (click)="navigateToSettings()">
+              <div class="action-icon settings">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                  <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <h4>Configuración</h4>
+              <p>Ajustes de la aplicación</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Today's Stats -->
+        <section class="stats-section">
+          <div class="section-header">
+            <h3>Estadísticas de Hoy</h3>
+            <span class="stats-date">{{ todayDate }}</span>
+          </div>
+          
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon workouts">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M6 2v6h.01M18 2v6h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" stroke-width="2"/>
+                  <path d="M8 12h8m-8 4h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="stat-content">
+                <h4>{{ todayStats.workouts }}</h4>
+                <p>Entrenamientos</p>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon time">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                  <polyline points="12,6 12,12 16,14" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="stat-content">
+                <h4>{{ todayStats.timeSpent }}min</h4>
+                <p>Tiempo Entrenado</p>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon calories">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="stat-content">
+                <h4>{{ todayStats.calories }}</h4>
+                <p>Calorías Quemadas</p>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon visits">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="currentColor" stroke-width="2"/>
+                  <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="stat-content">
+                <h4>{{ todayStats.visits }}</h4>
+                <p>Visitas al Gimnasio</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>

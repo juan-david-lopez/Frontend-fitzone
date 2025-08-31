@@ -1,0 +1,139 @@
+.memberships-container {
+  min-height: 100vh;
+  background: #1a1a1a;
+  color: #fff;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  .header {
+    text-align: center;
+
+    h1 {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: #9ca3af;
+    }
+  }
+
+  .current-membership {
+    background: #2d2d2d;
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+
+    h2 {
+      margin-bottom: 0.5rem;
+    }
+
+    .expiry {
+      font-size: 0.9rem;
+      color: #d1d5db;
+    }
+
+    button {
+      margin-top: 1rem;
+      padding: 0.5rem 1.5rem;
+      border-radius: 8px;
+      border: none;
+      background: #3b82f6;
+      color: white;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.3s;
+
+      &:hover {
+        background: #2563eb;
+      }
+    }
+  }
+
+  .plans {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+
+    .plan-card {
+      padding: 1.5rem;
+      border-radius: 12px;
+      background: #2d2d2d;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      transition: transform 0.2s;
+
+      &:hover {
+        transform: translateY(-5px);
+      }
+
+      .header {
+        h3 {
+          font-size: 1.4rem;
+          margin-bottom: 0.3rem;
+        }
+
+        p {
+          color: #9ca3af;
+          font-size: 0.9rem;
+        }
+      }
+
+      .price {
+        margin: 1rem 0;
+        font-size: 1.6rem;
+        font-weight: bold;
+      }
+
+      ul {
+        margin-top: 1rem;
+        list-style: none;
+        padding: 0;
+
+        li {
+          margin-bottom: 0.5rem;
+          font-size: 0.9rem;
+          display: flex;
+          align-items: center;
+
+          &::before {
+            content: '✔';
+            color: #10b981;
+            margin-right: 0.5rem;
+          }
+        }
+      }
+
+      .actions {
+        margin-top: auto;
+        display: flex;
+        justify-content: center;
+
+        button {
+          padding: 0.5rem 1rem;
+          border-radius: 8px;
+          border: none;
+          background: #10b981;
+          color: white;
+          cursor: pointer;
+          font-weight: 500;
+          transition: background 0.3s;
+
+          &:hover {
+            background: #059669;
+          }
+        }
+      }
+
+      &.popular {
+        border: 2px solid #ef4444;
+      }
+    }
+  }
+}

@@ -1,0 +1,150 @@
+.register-container {
+  min-height: 100vh;
+  background-color: #1a1a1a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+
+.register-card {
+  background-color: #2a2a2a;
+  border-radius: 10px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 500px;
+  margin: 2rem 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  h2 {
+    color: #ff0000;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+  }
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+
+  label {
+    display: block;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+  }
+  select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #333333;
+    border-radius: 5px;
+    background-color: #333333;
+    color: #ffffff;
+    font-size: 1rem;
+    cursor: pointer;
+    appearance: none; // elimina el estilo por defecto
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    &:focus {
+      outline: none;
+      border-color: #ff0000;
+    }
+  }
+  &::after {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #ffffff;
+    font-size: 0.8rem;
+  }
+
+  input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #333333;
+    border-radius: 5px;
+    background-color: #333333;
+    color: #ffffff;
+    font-size: 1rem;
+
+    &:focus {
+      outline: none;
+      border-color: #ff0000;
+    }
+  }
+
+  .error-message {
+    color: #ff0000;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+}
+
+.terms-group {
+  margin: 1.5rem 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+
+  input[type="checkbox"] {
+    margin-top: 0.25rem;
+  }
+
+  label {
+    color: #ffffff;
+    font-size: 0.9rem;
+  }
+
+  a {
+    color: #ff0000;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.submit-button {
+  width: 100%;
+  padding: 1rem;
+  background-color: #ff0000;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: darken(#ff0000, 10%);
+  }
+
+  &:disabled {
+    background-color: #666666;
+    cursor: not-allowed;
+  }
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: #ffffff;
+
+  a {
+    color: #ff0000;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.logo {
+  width: 150px;
+  margin-bottom: 1rem;
+}
