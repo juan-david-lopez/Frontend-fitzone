@@ -18,8 +18,9 @@ export class RegisterComponent {
   registerForm: FormGroup;
   roles: UserRole[] = ['MEMBER']; // fijo
   documentTypes: string[] = ['CC', 'TI', 'CE']; // 👈 para que no falle el HTML
-  locations: { id: number; name: string }[] = [{ id: 1, name: 'Sede Principal' }]; // 👈 fijo a 1
+  locations: { id: number; name: string }[] = [{ id: 1, name: 'Sede Principal' }]; 
   isSubmitting = false; // 👈 usado para deshabilitar botón
+  selectedPlan: any;
 
   constructor(
     private fb: FormBuilder,
@@ -27,6 +28,8 @@ export class RegisterComponent {
     private router: Router
   ) {
     this.registerForm = this.createForm();
+    const nav = this.router.getCurrentNavigation();
+    this.selectedPlan = nav?.extras.state?.['selectedPlan'];
   }
 
   private createForm(): FormGroup {
@@ -52,30 +55,37 @@ export class RegisterComponent {
   }
 
   onSubmit(): void {
-    localStorage.removeItem('token');
-    sessionStorage.removeItem('token');
-    if (this.registerForm.invalid) {
-      this.registerForm.markAllAsTouched();
-      return;
-    }
+  localStorage.removeItem('token');
+  sessionStorage.removeItem('token');
 
-    this.isSubmitting = true;
-    const payload = { ...this.registerForm.value };
-    delete payload.confirmPassword;
-    delete payload.acceptTerms;
-
-    this.authService.register(payload).subscribe({
-      next: () => {
-        alert('Usuario registrado con éxito');
-        this.navigateToLogin();
-      },
-      error: (err) => {
-        console.error('Error en registro:', err);
-        alert('Error al registrar usuario');
-        this.isSubmitting = false;
-      }
-    });
+  if (this.registerForm.invalid) {
+    this.registerForm.markAllAsTouched();
+    return;
   }
+
+  this.isSubmitting = true;
+  const payload = { ...this.registerForm.value };
+  delete payload.confirmPassword;
+  delete payload.acceptTerms;
+
+  this.authService.register(payload).subscribe({
+    next: (response) => {
+      console.log('✅ Registro exitoso:', response);
+
+      // 🔹 Después de registrar, redirigir dependiendo del plan
+      if (this.selectedPlan) {
+        this.router.navigate(['/payment'], { state: { selectedPlan: this.selectedPlan } });
+      } else {
+        this.router.navigate(['/login']);
+      }
+    },
+    error: (err) => {
+      console.error('❌ Error en registro:', err);
+      this.isSubmitting = false;
+      alert('Error al registrar usuario');
+    }
+  });
+}
 
   // 👈 función que pedía tu template
   navigateToLogin(): void {

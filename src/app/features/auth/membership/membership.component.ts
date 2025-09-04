@@ -2,12 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
+enum MembershipTypeName {
+  BASIC = 'BASIC',
+  PREMIUM = 'PREMIUM',
+  VIP = 'VIP'
+}
+
 interface MembershipPlan {
-  id: number;
+  id: MembershipTypeName;
   name: string;
   description: string;
-  price: number;
-  duration: number; // en meses
+  price: number;   // mensual
+  duration: number; // fijo: 1 mes
   features: string[];
   isPopular?: boolean;
   color: string;
@@ -30,25 +36,27 @@ export class MembershipsComponent implements OnInit {
 
   membershipPlans: MembershipPlan[] = [
     {
-      id: 1,
+      id: MembershipTypeName.BASIC,
       name: 'Básico',
       description: 'Perfecto para comenzar tu journey fitness',
-      price: 35000,
-      duration: 1,
+      price: 50000,
+      duration: 1, // siempre en meses
       features: [
         'Acceso al área de pesas',
+        'solo 2 horas por dia de entrenamiento',
         'Máquinas cardiovasculares',
         'Vestuarios y duchas',
-        'Horario: 6AM - 10PM'
+        'Horario: 6AM - 8PM',
+        'Solo puede estar en una sucursal'
       ],
       color: '#6B7280'
     },
     {
-      id: 2,
+      id: MembershipTypeName.PREMIUM,
       name: 'Premium',
       description: 'La opción más completa para resultados óptimos',
-      price: 150000,
-      duration: 6,
+      price: 70000,
+      duration: 1,
       features: [
         'Todo lo del plan básico',
         'Acceso 24/7',
@@ -62,27 +70,14 @@ export class MembershipsComponent implements OnInit {
       color: '#EF4444'
     },
     {
-      id: 3,
-      name: 'Estándar',
-      description: 'Equilibrio perfecto entre precio y beneficios',
-      price: 90000,
-      duration: 3,
-      features: [
-        'Todo lo del plan básico',
-        'Clases grupales (5/mes)',
-        'Área de funcional',
-        'Horario extendido: 5AM - 11PM'
-      ],
-      color: '#10B981'
-    },
-    {
-      id: 4,
-      name: 'Anual VIP',
+      id: MembershipTypeName.VIP,
+      name: 'VIP',
       description: 'El mejor valor para miembros comprometidos',
-      price: 480000,
-      duration: 12,
+      price: 90000,
+      duration: 1,
       features: [
         'Todo lo del plan Premium',
+        'Puede ingresar a cualquier sucursal',
         'Entrenador personal (4 sesiones/mes)',
         'Acceso a sauna y jacuzzi',
         'Plan nutricional personalizado',
@@ -98,10 +93,15 @@ export class MembershipsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCurrentMembership();
+    const nav = this.router.getCurrentNavigation();
+    const selectedPlan = nav?.extras.state?.['plan'];
+    if (selectedPlan) {
+      console.log('Plan preseleccionado desde preview:', selectedPlan);
+    }
   }
 
   private loadCurrentMembership(): void {
-    // Simulación - aquí luego llamas al servicio backend
+    // Simulación - luego conectar con backend
     this.currentMembership = {
       name: 'Plan Premium',
       expiryDate: '15 de Diciembre, 2025'
@@ -113,15 +113,15 @@ export class MembershipsComponent implements OnInit {
   }
 
   selectPlan(plan: MembershipPlan): void {
-    console.log('Plan seleccionado:', plan);
-    this.router.navigate(['/payment'], {
-      queryParams: { planId: plan.id },
-      state: { selectedPlan: plan }
-    });
+    const isLoggedIn = localStorage.getItem('token');
+    if (!isLoggedIn) {
+      this.router.navigate(['/register'], { state: { selectedPlan: plan } });
+    } else {
+      this.router.navigate(['/payment'], { state: { selectedPlan: plan } });
+    }
   }
 
   renewMembership(): void {
     console.log('Renovando membresía...');
-    // Aquí va la lógica de backend para renovar
   }
 }

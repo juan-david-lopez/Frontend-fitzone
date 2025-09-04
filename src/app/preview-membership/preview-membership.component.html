@@ -1,0 +1,13 @@
+<div class="preview-container">
+  <h2>Estás a punto de elegir: {{ plan?.title }}</h2>
+  <p>{{ plan?.price }}</p>
+
+  <ul>
+    <li *ngFor="let feature of plan?.features">{{ feature }}</li>
+  </ul>
+
+  <div class="actions">
+    <button (click)="goBack()">Volver</button>
+    <button (click)="continue()">Continuar</button>
+  </div>
+</div>

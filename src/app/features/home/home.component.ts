@@ -54,24 +54,20 @@ export class HomeComponent implements OnInit {
 
   goToCheckout(plan: any) {
     if (!this.isLoggedIn) {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/membership']);
       return;
     }
     this.router.navigate(['/checkout'], { state: { plan } });
   }
 
   logout(): void {
-    this.authService.logout(); // limpia token y usuario
+    this.authService.logout(); 
     this.isLoggedIn = false;
     this.router.navigate(['/login']);
   }
   goToMemberships(plan: any) {
-  if (!this.authService.isLoggedIn()) {
-    this.router.navigate(['/login']);
-    return;
+  this.router.navigate(['/preview-membership'], { state: { plan } });
   }
-  this.router.navigate(['/memberships'], { state: { plan } });
-}
 
 
   navigateToHome() {

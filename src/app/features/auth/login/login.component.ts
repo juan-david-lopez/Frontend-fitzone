@@ -24,6 +24,7 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   isSubmitting = false;
   loginError: string = '';
+  selectedPlan: any;
 
   constructor(
     private fb: FormBuilder,
@@ -31,6 +32,8 @@ export class LoginComponent implements OnInit {
     private authService: AuthService
   ) {
     this.loginForm = this.createForm();
+    const nav = this.router.getCurrentNavigation();
+  this.selectedPlan = nav?.extras.state?.['selectedPlan'];
   }
 
   ngOnInit(): void {
@@ -99,7 +102,14 @@ export class LoginComponent implements OnInit {
     this.authService.login(loginRequest).subscribe({
       next: (response) => {
         console.log('✅ Login successful, OTP required:', response);
+        const nav = this.router.getCurrentNavigation();
+        const selectedPlan = nav?.extras.state?.['selectedPlan'];
 
+        if (selectedPlan) {
+          this.router.navigate(['/payment'], { state: { selectedPlan } });
+        } else {
+         this.router.navigate(['/dashboard']);
+        }
         // Guardar email si rememberMe está activo
         if (this.loginForm.get('rememberMe')?.value) {
           this.saveCredentials(loginRequest.email);
