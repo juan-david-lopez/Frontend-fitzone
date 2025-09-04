@@ -6,16 +6,25 @@
     <a routerLink="/contact">Contacto</a>
   </nav>
   
+  <!-- Menú de autenticación -->
   <nav class="auth-menu">
-    <a routerLink="/login">Iniciar Sesión</a>
-    <a routerLink="/register">Registrarse</a>
+    <!-- Si NO está logueado -->
+    <ng-container *ngIf="!isLoggedIn; else loggedInMenu">
+      <a routerLink="/login">Iniciar Sesión</a>
+      <a routerLink="/register">Registrarse</a>
+    </ng-container>
+
+    <!-- Si está logueado -->
+    <ng-template #loggedInMenu>
+      <button class="logout-button" (click)="logout()">Cerrar Sesión</button>
+    </ng-template>
   </nav>
 </div>
 
 <section class="hero-section">
   <h1>FitZone - Tu camino hacia una vida más saludable</h1>
   <p>Transforma tu cuerpo, mente y espíritu</p>
-  <button class="main-button" (click)="navigateToRegister()">Únete Ahora</button>
+  <button class="main-button" (click)="goToMemberships(memberships)">Únete Ahora</button>
 </section>
 
 <section class="memberships-section">
@@ -29,7 +38,7 @@
           {{ feature }}
         </li>
       </ul>
-      <button class="main-button" (click)="navigateToRegister()">
+      <button class="main-button" (click)="goToCheckout(membership)">
         Seleccionar Plan
       </button>
     </div>

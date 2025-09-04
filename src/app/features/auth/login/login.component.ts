@@ -84,61 +84,75 @@ export class LoginComponent implements OnInit {
     return 'Campo inválido';
   }
 
-onSubmit(): void {
-  this.loginForm.markAllAsTouched();
-  if (!this.loginForm.valid) return;
+  onSubmit(): void {
+    this.loginForm.markAllAsTouched();
+    if (!this.loginForm.valid) return;
 
-  this.isSubmitting = true;
-  this.loginError = '';
-  
-  const loginRequest: LoginRequest = {
-    email: this.loginForm.get('email')?.value.trim(),
-    password: this.loginForm.get('password')?.value
-  };
+    this.isSubmitting = true;
+    this.loginError = '';
+    
+    const loginRequest: LoginRequest = {
+      email: this.loginForm.get('email')?.value.trim(),
+      password: this.loginForm.get('password')?.value
+    };
 
-  this.authService.login(loginRequest).subscribe({
-    next: (response) => {
-      console.log('✅ Login successful:', response);
+    this.authService.login(loginRequest).subscribe({
+      next: (response) => {
+        console.log('✅ Login successful, OTP required:', response);
 
-      // 👉 Guardar token que devuelve el backend
-      this.saveToken(response.accessToken);
+        // Guardar email si rememberMe está activo
+        if (this.loginForm.get('rememberMe')?.value) {
+          this.saveCredentials(loginRequest.email);
+        } else {
+          this.clearSavedCredentials();
+        }
 
-      // Guardar email si rememberMe está activo
-      if (this.loginForm.get('rememberMe')?.value) {
-        this.saveCredentials(loginRequest.email);
-      } else {
-        this.clearSavedCredentials();
+        this.isSubmitting = false;
+
+        // ✅ CORREGIDO: Verificar que la respuesta indica que se requiere OTP
+        if (response && (response.status === 'OTP_REQUIRED' || response.step === 1)) {
+          // 🔹 Redirigir a OTP con el email
+          this.router.navigate(['/otp'], { 
+            state: { email: loginRequest.email },
+            queryParams: { email: loginRequest.email }
+          });
+        } else {
+          // 🔹 Si no requiere OTP, verificar si hay token directo
+          if (response.accessToken) {
+            this.authService.setSession(response);
+            this.router.navigate(['/dashboard']);
+          } else {
+            this.loginError = 'Respuesta inesperada del servidor';
+          }
+        }
+      },
+      error: (error) => {
+        console.error('❌ Login failed:', error);
+        this.isSubmitting = false;
+        
+        // ✅ MEJORADO: Manejo de errores específico para tu backend
+        if (error.status === 401) {
+          this.loginError = error.error?.error || 
+                           error.error?.message || 
+                           'Credenciales incorrectas. Verifica tu email y contraseña.';
+        } else if (error.status === 403) {
+          this.loginError = error.error?.error || 
+                           error.error?.message || 
+                           'Acceso denegado. Contacta al administrador.';
+        } else if (error.status === 0 || error.status === 500) {
+          this.loginError = 'Error de conexión con el servidor. Intenta nuevamente.';
+        } else {
+          // Extraer mensaje de error del backend
+          const errorMessage = error.error?.error || 
+                              error.error?.message || 
+                              error.message ||
+                              'Ocurrió un error inesperado. Inténtalo de nuevo.';
+          this.loginError = errorMessage;
+        }
       }
-
-      this.isSubmitting = false;
-
-      // 👉 Redirigir al dashboard
-      this.router.navigate(['/dashboard'], {
-        state: { userEmail: loginRequest.email }
-      });
-    },
-    error: (error) => {
-      console.error('❌ Login failed:', error);
-      this.isSubmitting = false;
-      
-      if (error.status === 401) {
-        this.loginError = 'Credenciales incorrectas. Verifica tu email y contraseña.';
-      } else if (error.status === 0) {
-        this.loginError = 'No se pudo conectar con el servidor. Verifica tu conexión.';
-      } else {
-        this.loginError = 'Ocurrió un error inesperado. Inténtalo de nuevo.';
-      }
-    }
-  });
-}
-
-  private saveToken(token: string): void {
-  try {
-    localStorage.setItem('authToken', token);
-  } catch (error) {
-    console.warn('No se pudo guardar el token', error);
+    });
   }
-}
+
   private saveCredentials(email: string): void {
     try {
       localStorage.setItem('rememberedEmail', email);
@@ -168,8 +182,14 @@ onSubmit(): void {
     const email = this.loginForm.get('email')?.value;
     if (email && this.loginForm.get('email')?.valid) {
       this.authService.forgotPassword(email).subscribe({
-        next: () => console.log('📩 Password reset email sent'),
-        error: (err) => console.error('Reset failed', err)
+        next: () => {
+          this.loginError = '📩 Se han enviado instrucciones a tu correo';
+        },
+        error: (error) => {
+          this.loginError = error.error?.error || 
+                           error.error?.message || 
+                           'Error al enviar instrucciones de recuperación';
+        }
       });
     }
   }

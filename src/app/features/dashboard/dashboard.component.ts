@@ -104,8 +104,8 @@ export class DashboardComponent implements OnInit {
   }
 
   logout(): void {
-    console.log('Cerrando sesión...');
-    // this.authService.logout();
-    // this.router.navigate(['/login']);
-  }
+  this.authService.logout();   // Limpia token y user
+  this.router.navigate(['/login']); // Redirige al login
+}
+
 }

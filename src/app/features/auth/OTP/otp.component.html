@@ -1,0 +1,35 @@
+<!-- features/auth/otp/otp.component.html -->
+<div class="otp-container">
+  <div class="otp-card">
+    <h2>Verificación de OTP</h2>
+    <p>Se ha enviado un código a tu correo: <strong>{{ email }}</strong></p>
+
+    <form [formGroup]="otpForm" (ngSubmit)="submitOTP()">
+      <label for="otp">Código OTP</label>
+      <input
+        id="otp"
+        type="text"
+        formControlName="otp"
+        maxlength="6"
+        placeholder="Ingresa tu código"
+      />
+      <div class="error" *ngIf="otpForm.get('otp')?.invalid && (otpForm.get('otp')?.touched || otpForm.get('otp')?.dirty)">
+        <span *ngIf="otpForm.get('otp')?.errors?.['required']">El código es requerido</span>
+        <span *ngIf="otpForm.get('otp')?.errors?.['minlength'] || otpForm.get('otp')?.errors?.['maxlength']">
+          El código debe tener 6 dígitos
+        </span>
+      </div>
+
+      <button type="submit" [disabled]="otpForm.invalid || isSubmitting" class="btn-primary">
+        {{ isSubmitting ? 'Verificando...' : 'Verificar' }}
+      </button>
+    </form>
+
+    <p class="info-msg" *ngIf="infoMsg">{{ infoMsg }}</p>
+    <p class="error-msg" *ngIf="errorMsg">{{ errorMsg }}</p>
+
+    <button class="btn-outline" (click)="resendOTP()" [disabled]="isSubmitting">
+      {{ isSubmitting ? 'Procesando...' : 'Reenviar código' }}
+    </button>
+  </div>
+</div>

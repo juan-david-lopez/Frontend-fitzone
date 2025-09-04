@@ -1,0 +1,115 @@
+.otp-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #000000 100%);
+  color: #fff;
+}
+
+.otp-card {
+  background: rgba(42, 42, 42, 0.95);
+  padding: 2rem 2.5rem;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #ff0000;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 6px rgba(255, 0, 0, 0.25);
+  }
+
+  p {
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    label {
+      text-align: left;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    input {
+      padding: 0.7rem 1rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      font-size: 1rem;
+      text-align: center;
+
+      &:focus {
+        outline: none;
+        border-color: #ff0000;
+        box-shadow: 0 0 8px rgba(255,0,0,0.5);
+      }
+    }
+
+    .error {
+      color: #EF4444;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+
+    button.btn-primary {
+      background: linear-gradient(45deg, #ff0000, #cc0000);
+      border: none;
+      color: white;
+      padding: 0.8rem;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: linear-gradient(45deg, #ff3333, #ff0000);
+      }
+
+      &:disabled {
+        background: rgba(255,0,0,0.3);
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .error-msg {
+    color: #EF4444;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .btn-outline {
+    margin-top: 1rem;
+    background: transparent;
+    border: 1px solid rgba(255, 0, 0, 0.6);
+    color: #ff4d4d;
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: rgba(255, 0, 0, 0.1);
+    }
+  }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .otp-card {
+    padding: 1.5rem;
+  }
+}

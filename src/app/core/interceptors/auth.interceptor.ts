@@ -18,16 +18,27 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      if (error.status === 401 && !isAuthUrl(req.url)) {
-        return authService.refreshToken().pipe(
+      if (error.status === 401 && token && !isAuthUrl(req.url)) {
+        return authService.refreshToken().pipe( // ✅ CORREGIDO: refreshToken() en lugar de ref()
           switchMap((response: AuthResponse) => {
-          const newToken = response.accessToken;
-          const retryReq = req.clone({
-          setHeaders: { Authorization: `Bearer ${newToken}` }
-        });
-    return next(retryReq);
-  })
-);
+            const newToken = response.accessToken;
+            if (newToken) {
+              const retryReq = req.clone({
+                setHeaders: { Authorization: `Bearer ${newToken}` }
+              });
+              return next(retryReq);
+            } else {
+              // Si no hay nuevo token, hacer logout
+              authService.logout();
+              return throwError(() => new Error('Refresh token failed'));
+            }
+          }),
+          catchError((refreshError) => {
+            // Si el refresh falla, hacer logout
+            authService.logout();
+            return throwError(() => refreshError);
+          })
+        );
       }
 
       return throwError(() => error);
@@ -37,9 +48,12 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
 function isAuthUrl(url: string): boolean {
   return url.includes('/auth/login') || 
+         url.includes('/auth/login-2fa') || // ✅ Agregado
+         url.includes('/auth/verify-otp') || // ✅ Agregado
          url.includes('/auth/refresh') ||
-         url.includes('/users/register') ||
+         url.includes('/users/public/register') || // ✅ Corregido para coincidir con tu endpoint
          url.includes('/auth/forgot-password') ||
-         url.includes('/auth/reset-password');
+         url.includes('/auth/reset-password') ||
+         url.includes('/auth/generate-otp') || // ✅ Agregado
+         url.includes('/auth/resend-otp'); // ✅ Agregado
 }
-  

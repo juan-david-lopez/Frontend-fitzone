@@ -5,7 +5,7 @@ import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 
 // Enum de roles reales que acepta tu backend
-export type UserRole = 'MEMBER' | 'INSTRUCTOR';
+export type UserRole = 'MEMBER';
 
 @Component({
   selector: 'app-register',
@@ -52,6 +52,8 @@ export class RegisterComponent {
   }
 
   onSubmit(): void {
+    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
       return;

@@ -4,6 +4,7 @@ import { LoginComponent } from './features/auth/login/login.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { RegisterComponent } from './features/auth/register/register.component';
 import { HomeComponent } from './features/home/home.component';
+import { OTPComponent } from './features/auth/OTP/otp.component';
 
 export const routes: Routes = [
   // Redirect root to home
@@ -12,11 +13,15 @@ export const routes: Routes = [
     redirectTo: 'home',
     pathMatch: 'full'
   },
-  // Auth routes (accessible only to guests for login, no guard for )
   {
     path: 'login',
     canActivate: [() => guestGuard],
     component: LoginComponent
+  },
+  {
+    path: 'otp', 
+    canActivate: [() => guestGuard],
+    component: OTPComponent
   },
   {
     path: 'dashboard',

@@ -133,7 +133,6 @@
         <select id="role" formControlName="role">
           <option value="" disabled>Selecciona un rol</option>
           <option value="MEMBER">Miembro</option>
-          <option value="INSTRUCTOR">Instructor</option>
         </select>
         <div class="error-message" *ngIf="registerForm.get('role')?.touched && registerForm.get('role')?.invalid">
           Debes seleccionar un rol

@@ -12,10 +12,10 @@
           id="email" 
           formControlName="email" 
           placeholder="tu@email.com">
-        <div class="error-message" *ngIf="loginForm.get('email')?.errors?.['required'] && loginForm.get('email')?.touched">
+        <div class="error-message" *ngIf="hasError('email', 'required')">
           El correo electrónico es requerido
         </div>
-        <div class="error-message" *ngIf="loginForm.get('email')?.errors?.['email'] && loginForm.get('email')?.touched">
+        <div class="error-message" *ngIf="hasError('email', 'email') || hasError('email', 'invalidEmail')">
           Por favor ingresa un correo electrónico válido
         </div>
       </div>
@@ -27,19 +27,24 @@
           id="password" 
           formControlName="password"
           placeholder="********">
-        <div class="error-message" *ngIf="loginForm.get('password')?.errors?.['required'] && loginForm.get('password')?.touched">
+        <div class="error-message" *ngIf="hasError('password', 'required')">
           La contraseña es requerida
         </div>
-        <div class="error-message" *ngIf="loginForm.get('password')?.errors?.['minlength'] && loginForm.get('password')?.touched">
+        <div class="error-message" *ngIf="hasError('password', 'minlength')">
           La contraseña debe tener al menos 6 caracteres
         </div>
+      </div>
+
+      <!-- ✅ Mensaje de error general -->
+      <div class="error-message" *ngIf="loginError" style="text-align: center; margin-bottom: 15px;">
+        {{ loginError }}
       </div>
 
       <button 
         type="submit" 
         class="submit-button"
-        [disabled]="!loginForm.valid">
-        Iniciar Sesión
+        [disabled]="loginForm.invalid || isSubmitting">
+        {{ isSubmitting ? 'Iniciando sesión...' : 'Iniciar Sesión' }}
       </button>
     </form>
 
