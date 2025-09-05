@@ -1,13 +1,29 @@
 <div class="preview-container">
-  <h2>Estás a punto de elegir: {{ plan?.title }}</h2>
-  <p>{{ plan?.price }}</p>
-
-  <ul>
-    <li *ngFor="let feature of plan?.features">{{ feature }}</li>
-  </ul>
-
-  <div class="actions">
-    <button (click)="goBack()">Volver</button>
-    <button (click)="continue()">Continuar</button>
+  <div class="preview-card">
+    <div class="card-header">
+      <h2>Estás a punto de elegir: {{ plan?.title }}</h2>
+    </div>
+    
+    <div class="card-body">
+      <div class="price-tag">
+        <span class="price">{{ plan?.price }}</span>
+      </div>
+      
+      <div class="features-list">
+        <h3>Beneficios incluidos:</h3>
+        <ul>
+          <li *ngFor="let feature of plan?.features">
+            <span class="check-icon">✓</span> {{ feature }}
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="card-footer">
+      <div class="actions">
+        <button class="btn-secondary" (click)="goBack()">Volver</button>
+        <button class="btn-primary" (click)="continue()">Continuar</button>
+      </div>
+    </div>
   </div>
 </div>

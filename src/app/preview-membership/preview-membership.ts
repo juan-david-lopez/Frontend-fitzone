@@ -19,9 +19,8 @@ export class PreviewMembershipComponent {
   }
 
   continue() {
-    // Navegar a memberships con el plan seleccionado
-    this.router.navigate(['/memberships'], { state: { plan: this.plan } });
-  }
+  this.router.navigate(['/memberships'], { state: { plan: this.plan } });
+}
 
   goBack() {
     this.router.navigate(['/home']);

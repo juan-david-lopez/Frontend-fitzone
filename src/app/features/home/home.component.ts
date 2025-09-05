@@ -18,26 +18,34 @@ export class HomeComponent implements OnInit {
     {
       title: 'Plan Básico',
       price: '$50.000/mes',
-      features: ['Acceso al gimnasio', 'Clases básicas', 'Casillero estándar']
+      features: [
+        'Acceso al área de pesas',
+        'solo 2 horas por dia de entrenamiento',
+        'Máquinas cardiovasculares',
+        'Vestuarios y duchas',
+        'Solo puede estar en una sucursal'
+      ],
     },
     {
       title: 'Plan Premium',
       price: '$70.000/mes',
       features: [
-        'Acceso ilimitado al gimnasio',
-        'Todas las clases incluidas',
-        'Casillero premium',
-        'Entrenador personal (2 sesiones/mes)'
-      ]
+        'Todo lo del plan básico',
+        'Acceso 24/7',
+        'Entrenador personal (2 sesiones/mes)',
+        'Evaluación nutricional',
+        'Invitaciones para amigos (1/mes)'
+      ],
     },
     {
       title: 'Plan Elite',
       price: '$90.000/mes',
       features: [
-        'Acceso VIP',
-        'Todas las clases incluidas',
-        'Casillero premium',
+        'Todo lo del plan Premium',
+        'Puede ingresar a cualquier sucursal',
         'Entrenador personal (4 sesiones/mes)',
+        'Plan nutricional personalizado',
+        'Invitaciones para amigos (3/mes)',
         'Nutricionista incluido'
       ]
     }
@@ -57,7 +65,7 @@ export class HomeComponent implements OnInit {
       this.router.navigate(['/membership']);
       return;
     }
-    this.router.navigate(['/checkout'], { state: { plan } });
+    this.router.navigate(['/login']);
   }
 
   logout(): void {

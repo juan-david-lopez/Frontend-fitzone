@@ -1,7 +1,18 @@
 <div class="login-container">
   <img src="/assets/images/logo.png" alt="FitZone Logo" class="logo">
+   <!-- 👇 ahora está afuera -->
   
   <div class="login-card">
+    <button class="back-btn" (click)="goHome()">
+    <svg width="20" height="20" viewBox="0 0 20 24" fill="none">
+      <path d="M19 12H5m7-7l-7 7 7 7" 
+            stroke="currentColor" 
+            stroke-width="1" 
+            stroke-linecap="round" 
+            stroke-linejoin="round"/>
+    </svg>
+    Volver
+  </button>
     <h2>Iniciar Sesión</h2>
     
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">

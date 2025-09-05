@@ -162,6 +162,9 @@ export class LoginComponent implements OnInit {
       }
     });
   }
+  goHome(): void {
+  this.router.navigate(['/home']).catch(console.error);
+}
 
   private saveCredentials(email: string): void {
     try {

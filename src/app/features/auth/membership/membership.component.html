@@ -1,138 +1,92 @@
 <div class="memberships-container">
-      <!-- Header -->
-      <header class="memberships-header">
-        <button class="back-btn" (click)="goBack()">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M19 12H5m7-7l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          Volver
-        </button>
-        <h1>Planes de Membresía</h1>
-        <div class="header-subtitle">
-          <p>Elige el plan perfecto para alcanzar tus objetivos</p>
-        </div>
-      </header>
-
-      <!-- Current Membership Status -->
-      <section class="current-membership" *ngIf="currentMembership">
-        <div class="current-card">
-          <div class="current-info">
-            <h3>Tu Membresía Actual</h3>
-            <div class="current-details">
-              <span class="current-plan">{{ currentMembership.name }}</span>
-              <span class="current-status">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="12" r="10" fill="#10B981"/>
-                  <path d="m9 12 2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                Activa hasta {{ currentMembership.expiryDate }}
-              </span>
-            </div>
-          </div>
-          <button class="renew-btn" (click)="renewMembership()">Renovar</button>
-        </div>
-      </section>
-
-      <!-- Plans Grid -->
-      <section class="plans-section">
-        <div class="plans-grid">
-          <div 
-            *ngFor="let plan of membershipPlans" 
-            class="plan-card"
-            [ngClass]="{ 'popular': plan.isPopular }"
-            [style.--plan-color]="plan.color">
-            
-            <div class="plan-header" *ngIf="plan.isPopular">
-              <span class="popular-badge">MÁS POPULAR</span>
-            </div>
-
-            <div class="plan-content">
-              <div class="plan-info">
-                <h3 class="plan-name">{{ plan.name }}</h3>
-                <p class="plan-description">{{ plan.description }}</p>
-                
-                <div class="plan-price">
-                  <span class="price-amount">${{ plan.price | number:'1.0-0' }}</span>
-                  <span class="price-period">/ {{ plan.duration }} {{ plan.duration === 1 ? 'mes' : 'meses' }}</span>
-                </div>
-              </div>
-
-              <div class="plan-features">
-                <h4>Incluye:</h4>
-                <ul class="features-list">
-                  <li *ngFor="let feature of plan.features">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                      <circle cx="12" cy="12" r="10" fill="currentColor"/>
-                      <path d="m9 12 2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    {{ feature }}
-                  </li>
-                </ul>
-              </div>
-
-              <button 
-                class="select-plan-btn" 
-                [ngClass]="{ 'popular-btn': plan.isPopular }"
-                (click)="selectPlan(plan)">
-                {{ currentMembership ? 'Cambiar Plan' : 'Seleccionar Plan' }}
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Benefits Section -->
-      <section class="benefits-section">
-        <h2>¿Por qué elegir FitZone?</h2>
-        <div class="benefits-grid">
-          <div class="benefit-card">
-            <div class="benefit-icon equipment">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M6.5 6.5h11m-11 11h11m-9-9v7m7-7v7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <circle cx="9" cy="9" r="1" fill="currentColor"/>
-                <circle cx="15" cy="9" r="1" fill="currentColor"/>
-                <circle cx="9" cy="15" r="1" fill="currentColor"/>
-                <circle cx="15" cy="15" r="1" fill="currentColor"/>
-              </svg>
-            </div>
-            <h4>Equipamiento Moderno</h4>
-            <p>Máquinas de última generación y pesas libres</p>
-          </div>
-
-          <div class="benefit-card">
-            <div class="benefit-icon trainer">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
-              </svg>
-            </div>
-            <h4>Entrenadores Certificados</h4>
-            <p>Profesionales que te guiarán en tu progreso</p>
-          </div>
-
-          <div class="benefit-card">
-            <div class="benefit-icon schedule">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-                <polyline points="12,6 12,12 16,14" stroke="currentColor" stroke-width="2"/>
-              </svg>
-            </div>
-            <h4>Horarios Flexibles</h4>
-            <p>Abierto 24/7 para adaptarse a tu rutina</p>
-          </div>
-
-          <div class="benefit-card">
-            <div class="benefit-icon classes">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <h4>Clases Grupales</h4>
-            <p>Yoga, Pilates, CrossFit y más</p>
-          </div>
-        </div>
-      </section>
+  <!-- Header -->
+  <header class="memberships-header">
+    <button class="back-btn" (click)="goBack()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M19 12H5m7-7l-7 7 7 7" 
+              stroke="currentColor" 
+              stroke-width="2" 
+              stroke-linecap="round" 
+              stroke-linejoin="round"/>
+      </svg>
+      Volver
+    </button>
+    <h1>Planes de Membresía</h1>
+    <div class="header-subtitle">
+      <p>Elige el plan perfecto para alcanzar tus objetivos</p>
     </div>
+  </header>
+
+  <section class="preview-selected" *ngIf="preselectedPlan">
+    <div class="preview-card selected highlighted">
+      <div class="card-header">
+        <h2>Plan Seleccionado</h2>
+        <h3 class="plan-name">{{ preselectedPlan.name }}</h3>
+      </div>
+      <div class="card-body">
+        <p>{{ preselectedPlan.description }}</p>
+        <div class="price-tag">
+          <span class="price">${{ preselectedPlan.price | number:'1.0-0' }}</span>
+          <span class="period">/ {{ preselectedPlan.duration }} mes</span>
+        </div>
+        <div class="features-list">
+          <h3>Incluye:</h3>
+          <ul>
+            <li *ngFor="let feature of preselectedPlan.features">
+              <span class="check-icon">✓</span> {{ feature }}
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button class="btn-primary" (click)="selectPlan(preselectedPlan)">
+          Continuar con este plan
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 🔹 Lista de todos los planes -->
+  <section class="plans">
+    <div 
+      *ngFor="let plan of membershipPlans" 
+      class="preview-card"
+      [ngClass]="{ 
+        'popular': plan.isPopular,
+        'selected': preselectedPlan?.id === plan.id 
+      }">
+
+      <div class="card-header">
+        <h2>{{ plan.name }}</h2>
+        <p>{{ plan.description }}</p>
+        <span class="popular-badge" *ngIf="plan.isPopular">MÁS POPULAR</span>
+      </div>
+
+      <div class="card-body">
+        <div class="price-tag">
+          <span class="price">${{ plan.price | number:'1.0-0' }}</span>
+          <span class="period">/ {{ plan.duration }} mes</span>
+        </div>
+
+        <div class="features-list">
+          <h3>Incluye:</h3>
+          <ul>
+            <li *ngFor="let feature of plan.features">
+              <span class="check-icon">✓</span> {{ feature }}
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <div class="actions">
+          <button 
+            class="btn-primary"
+            (click)="selectPlan(plan)">
+            Seleccionar Plan
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

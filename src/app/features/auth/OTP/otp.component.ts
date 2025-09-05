@@ -45,33 +45,45 @@ export class OTPComponent {
     }
   });
 }
+submitOTP() {
+  if (!this.otpForm.valid || this.isSubmitting) return;
 
-  submitOTP() {
-    if (!this.otpForm.valid || this.isSubmitting) return;
+  this.isSubmitting = true;
+  this.errorMsg = '';
+  this.infoMsg = '';
 
-    this.isSubmitting = true; // ✅ Iniciar loading
-    this.errorMsg = '';
-    this.infoMsg = '';
+  const otp = this.otpForm.get('otp')?.value;
 
-    const otp = this.otpForm.get('otp')?.value;
-    
-    this.authService.validateOTP(this.email, otp).subscribe({
-      next: (response) => {
-        this.isSubmitting = false; // ✅ Finalizar loading
-        
-        if (response && response.accessToken) {
-          this.authService.setSession({ accessToken: response.accessToken });
-          this.router.navigate(['/dashboard']);
+  this.authService.validateOTP(this.email, otp).subscribe({
+    next: (response) => {
+      this.isSubmitting = false;
+
+      if (response && response.accessToken) {
+        // Guardar sesión
+        this.authService.setSession({ accessToken: response.accessToken });
+
+        // 👇 Recuperar plan (si venía desde memberships → register)
+        const selectedPlan = history.state['selectedPlan'];
+
+        if (selectedPlan) {
+          // 🔥 Ir a pagos directamente
+          this.router.navigate(['/payment'], { state: { selectedPlan } });
         } else {
-          this.errorMsg = 'Error en la respuesta del servidor';
+          // Si no había plan, mandarlo a dashboard como siempre
+          this.router.navigate(['/dashboard']);
         }
-      },
-      error: (error) => {
-        this.isSubmitting = false; // ✅ Finalizar loading
-        this.errorMsg = error.error?.error || 'Código incorrecto o expirado';
+      } else {
+        this.errorMsg = 'Error en la respuesta del servidor';
       }
-    });
-  }
+    },
+    error: (error) => {
+      this.isSubmitting = false;
+      this.errorMsg = error.error?.error || 'Código incorrecto o expirado';
+    }
+  });
+}
+
+
 
   resendOTP() {
     if (!this.email || this.isSubmitting) return;

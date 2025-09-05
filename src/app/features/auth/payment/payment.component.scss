@@ -1,0 +1,87 @@
+.payment-container {
+  min-height: 100vh;
+  background-color: #121212; // negro profundo
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.payment-card {
+  background: #1e1e1e; // gris oscuro
+  border-radius: 15px;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.7);
+  text-align: center;
+  color: #fff;
+}
+
+.title {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #e50914; // rojo principal
+}
+
+.plan-info {
+  margin-bottom: 2rem;
+
+  h3 {
+    font-size: 1.4rem;
+    margin: 0.5rem 0;
+    color: #fff;
+  }
+
+  p {
+    margin: 0.3rem 0;
+    color: #bbb;
+  }
+
+  .price {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #e50914;
+    margin-top: 1rem;
+  }
+}
+
+.stripe-info {
+  font-size: 0.9rem;
+  color: #888;
+  margin-bottom: 1.5rem;
+}
+
+.pay-btn {
+  background: #e50914;
+  border: none;
+  color: white;
+  padding: 0.9rem 1.2rem;
+  font-size: 1.1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom: 1rem;
+  transition: background 0.3s ease;
+
+  &:hover {
+    background: #b20710;
+  }
+}
+
+.cancel-btn {
+  background: transparent;
+  border: 2px solid #e50914;
+  color: #e50914;
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #e50914;
+    color: white;
+  }
+}

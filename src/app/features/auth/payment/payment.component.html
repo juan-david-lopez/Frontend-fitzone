@@ -1,0 +1,19 @@
+<div class="payment-container">
+  <div class="payment-card">
+    <h2 class="title">Confirmar Pago</h2>
+
+    <div class="plan-info">
+      <h3>{{ plan?.name }}</h3>
+      <p class="price">
+        ${{ plan?.price | number:'1.0-0' }} / mes
+      </p>
+    </div>
+
+    <div class="stripe-info">
+      <p>⚡ Se usará Stripe para procesar tu pago de forma segura.</p>
+    </div>
+
+    <button class="pay-btn" (click)="pay()">Pagar Ahora</button>
+    <button class="cancel-btn" (click)="goBack()">Cancelar</button>
+  </div>
+</div>
