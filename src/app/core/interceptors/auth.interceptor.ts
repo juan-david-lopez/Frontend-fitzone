@@ -4,9 +4,11 @@ import { inject } from '@angular/core';
 import { AuthService } from '../../features/services/auth.service';
 import { AuthResponse } from '../../core/models/auth.models';
 import { catchError, switchMap, throwError } from 'rxjs';
+import { Router } from '@angular/router';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
+  const router = inject(Router);
   const token = authService.getToken();
 
   let authReq = req;
@@ -19,7 +21,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401 && token && !isAuthUrl(req.url)) {
-        return authService.refreshToken().pipe( // ✅ CORREGIDO: refreshToken() en lugar de ref()
+        // Intentar renovar el token
+        return authService.refreshToken().pipe(
           switchMap((response: AuthResponse) => {
             const newToken = response.accessToken;
             if (newToken) {
@@ -28,17 +31,20 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
               });
               return next(retryReq);
             } else {
-              // Si no hay nuevo token, hacer logout
+              // Si no hay nuevo token, redirigir al login
               authService.logout();
               return throwError(() => new Error('Refresh token failed'));
             }
           }),
           catchError((refreshError) => {
-            // Si el refresh falla, hacer logout
+            // Si el refresh falla, redirigir al login
             authService.logout();
             return throwError(() => refreshError);
           })
         );
+      } else if (error.status === 401) {
+        // Token inválido pero no podemos renovarlo, redirigir al login
+        authService.logout();
       }
 
       return throwError(() => error);
@@ -48,12 +54,12 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
 function isAuthUrl(url: string): boolean {
   return url.includes('/auth/login') || 
-         url.includes('/auth/login-2fa') || // ✅ Agregado
-         url.includes('/auth/verify-otp') || // ✅ Agregado
+         url.includes('/auth/login-2fa') ||
+         url.includes('/auth/verify-otp') ||
          url.includes('/auth/refresh') ||
-         url.includes('/users/public/register') || // ✅ Corregido para coincidir con tu endpoint
+         url.includes('/users/public/register') ||
          url.includes('/auth/forgot-password') ||
          url.includes('/auth/reset-password') ||
-         url.includes('/auth/generate-otp') || // ✅ Agregado
-         url.includes('/auth/resend-otp'); // ✅ Agregado
+         url.includes('/auth/generate-otp') ||
+         url.includes('/auth/resend-otp');
 }

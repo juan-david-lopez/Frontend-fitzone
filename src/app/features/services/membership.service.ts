@@ -1,73 +1,90 @@
-// membership.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 
-export interface MembershipType {
-  idMembershipType: number;
-  name: 'BASIC' | 'PREMIUM' | 'VIP';
-  description: string;
-  monthlyPrice: number;
-  accessToAllLocation: boolean;
-  groupClassesSessionsIncluded: number;
-  personalTrainingIncluded: number;
-  specializedClassesIncluded: boolean;
+// El monto debe ser en centavos y como entero para Stripe
+export interface PaymentIntentRequest {
+  amount: number;      // Monto en centavos (ej: $10.00 = 1000)
+  currency: string;    // Código de moneda (ej: 'usd')
+  description: string; // Descripción del pago
+  metadata?: {
+    plan_id: string;
+    original_amount_cop: string;
+    user_email: string;
+  }
 }
 
-export interface MembershipSubscription {
-  userId: number;
-  membershipTypeId: number;
+export interface PaymentIntentResponse {
+  clientSecret: string;
 }
 
-export interface MembershipSubscriptionResponse {
-  subscriptionId: number;
+export interface ConfirmPaymentResponse {
+  status: string;
+  paymentIntentId: string;
+  amount: number;
+  currency: string;
+}
+
+export interface CreateMembershipRequest {
+  userId: number;        // Long en el backend
+  MembershipTypeId: number;  // Long en el backend (mantener la M mayúscula para coincidir con el backend)
+  mainLocationId: number;    // Long en el backend
+  paymentIntentId: string;   // String en el backend
+}
+
+export interface MembershipResponse {
+  id: number;
   userId: number;
-  userName: string;
-  membershipTypeId: number;
   membershipTypeName: string;
-  membershipDescription: string;
-  monthlyPrice: number;
-  subscriptionDate: string;
-  expirationDate: string;
   status: 'ACTIVE' | 'EXPIRED' | 'CANCELLED' | 'SUSPENDED';
-  isActive: boolean;
+  startDate: string;
+  endDate: string;
+  mainLocationId: number;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class MembershipService {
-  private apiUrl = 'http://localhost:8080';
+  private apiUrl = 'http://localhost:8080/memberships';
+  private currentMembershipSubject = new BehaviorSubject<MembershipResponse | null>(null);
+  currentMembership$ = this.currentMembershipSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
-
-  // Obtener todos los tipos de membresía desde el backend
-  getAllMembershipTypes(): Observable<MembershipType[]> {
-    return this.http.get<MembershipType[]>(`${this.apiUrl}/membership-types`);
+  constructor(private http: HttpClient) {
+    // Intentar cargar la membresía del usuario al iniciar el servicio
+    const userId = this.getCurrentUserId();
+    if (userId) {
+      this.getMembershipByUserId(userId).subscribe(
+        membership => this.currentMembershipSubject.next(membership)
+      );
+    }
   }
 
-  // Obtener un tipo de membresía específico por ID
-  getMembershipTypeById(id: number): Observable<MembershipType> {
-    return this.http.get<MembershipType>(`${this.apiUrl}/membership-types/${id}`);
+  private getCurrentUserId(): number | null {
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    return user?.id || null;
   }
 
-  // Suscribirse a una membresía
-  subscribeToMembership(subscription: MembershipSubscription): Observable<MembershipSubscriptionResponse> {
-    return this.http.post<MembershipSubscriptionResponse>(`${this.apiUrl}/subscriptions`, subscription);
+  createPaymentIntent(request: PaymentIntentRequest): Observable<PaymentIntentResponse> {
+    return this.http.post<PaymentIntentResponse>(`${this.apiUrl}/create-payment-intent`, request);
   }
 
-  // Obtener suscripciones de un usuario
-  getUserSubscriptions(userId: number): Observable<MembershipSubscriptionResponse[]> {
-    return this.http.get<MembershipSubscriptionResponse[]>(`${this.apiUrl}/subscriptions/user/${userId}`);
+  // El backend maneja la confirmación del pago directamente en Stripe,
+  // no necesitamos un endpoint específico para confirmar
+
+  createMembership(request: CreateMembershipRequest): Observable<MembershipResponse> {
+    return this.http.post<MembershipResponse>(`${this.apiUrl}/create`, request);
   }
 
-  // Cancelar suscripción
-  cancelSubscription(subscriptionId: number): Observable<MembershipSubscriptionResponse> {
-    return this.http.patch<MembershipSubscriptionResponse>(`${this.apiUrl}/subscriptions/${subscriptionId}/cancel`, {});
+  getMembershipByUserId(userId: number): Observable<MembershipResponse> {
+    return this.http.get<MembershipResponse>(`${this.apiUrl}/${userId}`);
   }
 
-  // Crear nuevo tipo de membresía (para administradores)
-  createMembershipType(membershipType: Omit<MembershipType, 'idMembershipType'>): Observable<MembershipType> {
-    return this.http.post<MembershipType>(`${this.apiUrl}/membership-types`, membershipType);
+  updateCurrentMembership(membership: MembershipResponse) {
+    this.currentMembershipSubject.next(membership);
+  }
+
+  getCurrentMembership(): MembershipResponse | null {
+    return this.currentMembershipSubject.value;
   }
 }

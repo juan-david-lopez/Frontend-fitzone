@@ -11,7 +11,7 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { LoginRequest } from '../../../core/models/auth.models';
+import { LoginRequest, AuthResponse } from '../../../core/models/auth.models';
 
 @Component({
   selector: 'app-login',
@@ -198,7 +198,7 @@ export class LoginComponent implements OnInit {
         next: () => {
           this.loginError = '📩 Se han enviado instrucciones a tu correo';
         },
-        error: (error) => {
+        error: (error: { error?: { error?: string, message?: string } }) => {
           this.loginError = error.error?.error || 
                            error.error?.message || 
                            'Error al enviar instrucciones de recuperación';

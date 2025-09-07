@@ -1,24 +1,30 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { MembershipService, MembershipResponse } from '../services/membership.service';
+import { WebSocketService } from '../services/websocket.service';
+import { Subscription } from 'rxjs'; 
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule],
-  templateUrl:'./dashboard.component.html',
+  templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   userName: string = 'Usuario';
   userEmail: string = '';
   todayDate: string = '';
+  private websocketSubscription!: Subscription;
+  private currentUserId: number | null = null; // ✅ Añadir esta propiedad
 
-  // Datos simulados - reemplazar con servicio real
   membershipStatus = {
-    isActive: false, // Cambia a true para probar estado activo
-    expiryDate: '15 de Diciembre, 2024'
+    isActive: false,
+    expiryDate: '',
+    isLoading: true,
+    error: false
   };
 
   todayStats = {
@@ -30,20 +36,35 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private membershipService: MembershipService,
+    private websocketService: WebSocketService,
+    @Inject(PLATFORM_ID) private platformId: any
   ) {}
 
   ngOnInit(): void {
     this.loadUserInfo();
     this.loadTodayDate();
     this.loadTodayStats();
+    this.loadMembershipStatus();
+    this.setupWebSocketListener();
+    if (isPlatformBrowser(this.platformId)) {
+      this.setupWebSocketListener();
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.websocketSubscription) {
+      this.websocketSubscription.unsubscribe();
+    }
   }
 
   private loadUserInfo(): void {
     const currentUser = this.authService.getCurrentUser();
     if (currentUser) {
       this.userEmail = currentUser.email || '';
-      this.userName =  this.extractNameFromEmail(this.userEmail);
+      this.userName = currentUser.name || this.extractNameFromEmail(this.userEmail);
+      this.currentUserId = currentUser.id; // ✅ Asignar el ID del usuario
     }
   }
 
@@ -64,14 +85,57 @@ export class DashboardComponent implements OnInit {
   }
 
   private loadTodayStats(): void {
-    // Aquí cargarías las estadísticas reales del día
-    // Por ahora usamos datos de ejemplo
+    // Datos de ejemplo, puedes reemplazar por real stats
     this.todayStats = {
       workouts: 1,
       timeSpent: 45,
       calories: 320,
       visits: 1
     };
+  }
+
+  private loadMembershipStatus(): void {
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) {
+      this.membershipStatus.isLoading = false;
+      return;
+    }
+
+    this.membershipService.getMembershipByUserId(currentUser.id).subscribe({
+      next: (membership: MembershipResponse) => {
+        this.membershipStatus = {
+          isActive: membership.status === 'ACTIVE',
+          expiryDate: new Date(membership.endDate)
+            .toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' }),
+          isLoading: false,
+          error: false
+        };
+        
+        console.log('Estado de membresía cargado:', {
+          status: membership.status,
+          isActive: this.membershipStatus.isActive,
+          endDate: membership.endDate
+        });
+      },
+      error: (err) => {
+        console.error('Error cargando membresía:', err);
+        this.membershipStatus = {
+          isActive: false,
+          expiryDate: '',
+          isLoading: false,
+          error: true
+        };
+      }
+    });
+  }
+
+  // Método público para refrescar membresía (útil después de activaciones)
+  public refreshMembershipStatus(): void {
+    this.membershipStatus.isLoading = true;
+    this.membershipStatus.error = false;
+    setTimeout(() => {
+      this.loadMembershipStatus();
+    }, 2000);
   }
 
   getUserInitials(): string {
@@ -82,30 +146,78 @@ export class DashboardComponent implements OnInit {
     return names[0]?.charAt(0)?.toUpperCase() || 'U';
   }
 
-  // Métodos de navegación - por ahora solo console.log
-  navigateToProfile(): void {
-    console.log('Navegando a perfil...');
-    // this.router.navigate(['/profile']);
-  }
-
-  navigateToStats(): void {
-    console.log('Navegando a estadísticas...');
-    // this.router.navigate(['/stats']);
-  }
-
+  // Navegaciones para el template
   navigateToMemberships(): void {
-    console.log('Navegando a membresías...');
     this.router.navigate(['/memberships']);
   }
 
+  navigateToProfile(): void {
+    this.router.navigate(['/profile']);
+  }
+
+  navigateToStats(): void {
+    this.router.navigate(['/stats']);
+  }
+
   navigateToSettings(): void {
-    console.log('Navegando a configuración...');
-    // this.router.navigate(['/settings']);
+    this.router.navigate(['/settings']);
   }
 
   logout(): void {
-  this.authService.logout();   // Limpia token y user
-  this.router.navigate(['/login']); // Redirige al login
-}
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
 
+  private setupWebSocketListener(): void {
+    this.websocketSubscription = this.websocketService
+      .getMembershipUpdates()
+      .subscribe({
+        next: (membershipUpdate) => {
+          if (membershipUpdate && this.currentUserId) {
+            console.log('🔄 Actualización recibida:', membershipUpdate);
+            if (membershipUpdate.userId === this.currentUserId) {
+              this.handleMembershipUpdate(membershipUpdate);
+            }
+          }
+        },
+        error: (err) => {
+          console.error('❌ Error en WebSocket:', err);
+        }
+      });
+  }
+  private handleMembershipUpdate(membershipData: any): void {
+    // Actualizar el estado de la membresía con los nuevos datos
+    this.membershipStatus = {
+      isActive: membershipData.status === 'ACTIVE',
+      expiryDate: this.formatDate(membershipData.endDate),
+      isLoading: false,
+      error: false
+    };
+
+    // Mostrar notificación de éxito
+    this.showSuccessNotification('Membresía activada exitosamente!');
+    
+    console.log('✅ Dashboard actualizado con nueva membresía:', membershipData);
+  }
+
+  private showSuccessNotification(message: string): void {
+    // Puedes implementar un toast o notificación aquí
+    console.log('🎉 ' + message);
+    // Ejemplo con alerta nativa (puedes reemplazar por un componente de notificación)
+    alert(message);
+  }
+
+  private formatDate(dateString: string): string {
+    try {
+      return new Date(dateString)
+        .toLocaleDateString('es-ES', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        });
+    } catch (error) {
+      console.error('❌ Error formateando fecha:', error);
+      return dateString;
+    }
+  }
 }

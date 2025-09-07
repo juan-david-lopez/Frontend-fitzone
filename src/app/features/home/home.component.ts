@@ -20,7 +20,7 @@ export class HomeComponent implements OnInit {
       price: '$50.000/mes',
       features: [
         'Acceso al área de pesas',
-        'solo 2 horas por dia de entrenamiento',
+        '2 horas por dia de entrenamiento',
         'Máquinas cardiovasculares',
         'Vestuarios y duchas',
         'Solo puede estar en una sucursal'

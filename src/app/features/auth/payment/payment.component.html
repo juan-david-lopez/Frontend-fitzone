@@ -1,19 +1,84 @@
 <div class="payment-container">
   <div class="payment-card">
-    <h2 class="title">Confirmar Pago</h2>
+    <!-- Overlay de carga -->
+    <div class="loading-overlay" *ngIf="paymentProcessing">
+      <div class="spinner"></div>
+      <p>Procesando pago...</p>
+    </div>
 
-    <div class="plan-info">
-      <h3>{{ plan?.name }}</h3>
-      <p class="price">
-        ${{ plan?.price | number:'1.0-0' }} / mes
+    <h1 class="title">Finalizar Compra</h1>
+
+    <!-- Información del plan -->
+    <div class="plan-info" *ngIf="plan">
+      <h3>{{ plan.name }}</h3>
+      <p class="description">{{ plan.description }}</p>
+      <div class="price">{{ plan.price | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
+      
+      <div class="features" *ngIf="plan.features">
+        <ul>
+          <li *ngFor="let feature of plan.features">{{ feature }}</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Información del usuario -->
+    <div class="user-info" *ngIf="userInfo.email">
+      <h4>Información de facturación</h4>
+      <div class="form-group">
+        <label>Nombre</label>
+        <input type="text" class="form-control" [value]="userInfo.name" disabled>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" class="form-control" [value]="userInfo.email" disabled>
+      </div>
+    </div>
+
+    <!-- Formulario de tarjeta -->
+    <div class="form-group">
+      <label>Datos de tarjeta</label>
+      <div id="card-element" class="stripe-card-element">
+        <!-- Stripe injects the Card Element here -->
+      </div>
+    </div>
+
+    <!-- Información de tarjetas de prueba -->
+    <div class="test-cards-info">
+      <h4>Tarjetas de prueba</h4>
+      <div class="test-cards">
+        <div class="test-card">
+          <strong>Visa:</strong> 4242 4242 4242 4242
+        </div>
+        <div class="test-card">
+          <strong>Mastercard:</strong> 5555 5555 5555 4444
+        </div>
+        <div class="test-card">
+          <strong>AMEX:</strong> 3782 822463 10005
+        </div>
+      </div>
+      <p class="test-instructions">
+        Usa cualquier fecha futura, CVC aleatorio (ej. 123) y cualquier código postal
       </p>
     </div>
 
-    <div class="stripe-info">
-      <p>⚡ Se usará Stripe para procesar tu pago de forma segura.</p>
+    <!-- Mensaje de error -->
+    <div class="error-message" *ngIf="errorMessage">
+      {{ errorMessage }}
     </div>
 
-    <button class="pay-btn" (click)="pay()">Pagar Ahora</button>
-    <button class="cancel-btn" (click)="goBack()">Cancelar</button>
+    <!-- Información de Stripe -->
+    <div class="stripe-info">
+      <p>Los pagos son procesados de forma segura mediante Stripe. No almacenamos la información de tu tarjeta.</p>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="actions">
+      <button class="pay-btn" (click)="pay()" [disabled]="paymentProcessing || !plan">
+        {{ paymentProcessing ? 'Procesando...' : 'Pagar ahora' }}
+      </button>
+      <button class="cancel-btn" (click)="goBack()" [disabled]="paymentProcessing">
+        Cancelar
+      </button>
+    </div>
   </div>
 </div>

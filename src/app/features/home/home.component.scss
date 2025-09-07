@@ -1,265 +1,220 @@
-// Estilos del componente home
-@use 'sass:color';
-
 :host {
-  display: block;
-  min-height: 100vh;
-  background-color: #1a1a1a;
-  color: #ffffff;
-}
+            display: block;
+            min-height: 100vh;
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
 
-// Contenedor principal de navegación
-.header-navigation {
-  background-color: #000000;
-  padding: 0.8rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-shrink: 0;
-  width: 100%;
-  
-  // Menú principal de navegación (lado izquierdo)
-  .navigation-menu {
-    display: flex;
-    gap: 2rem;
-    align-items: center;
-    
-    a {
-      color: white;
-      text-decoration: none;
-      font-size: 1.1rem;
-      transition: color 0.3s;
+        .header-navigation {
+            background-color: #000000;
+            padding: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            width: 100%;
+        }
 
-      &:hover {
-        color: #ff0000;
-      }
-    }
-  }
+        .header-navigation .navigation-menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
 
-  // Menú de autenticación (lado derecho)
-  .auth-menu {
-    display: flex;
-    gap: 1.5rem;
-    align-items: center;
-    
-    a {
-      color: white;
-      text-decoration: none;
-      font-size: 1.1rem;
-      transition: color 0.3s;
+        .header-navigation .navigation-menu a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
 
-      &:hover {
-        color: #ff0000;
-      }
-    }
-  }
-}
+        .header-navigation .navigation-menu a:hover {
+            color: #ff0000;
+        }
 
-// Alternativa si quieres mantener separados los estilos pero alinearlos
-.navigation-container {
-  background-color: #000000;
-  padding: 0.8rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-shrink: 0;
-  width: 100%;
-}
+        .header-navigation .auth-menu {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
 
-.navigation-menu {
-  display: flex;
-  gap: 2rem;
-  align-items: center;
+        .header-navigation .auth-menu a, 
+        .header-navigation .auth-menu button {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            padding: 0;
+        }
 
-  a {
-    color: white;
-    text-decoration: none;
-    font-size: 1.1rem;
-    transition: color 0.3s;
+        .header-navigation .auth-menu a:hover, 
+        .header-navigation .auth-menu button:hover {
+            color: #ff0000;
+        }
 
-    &:hover {
-      color: #ff0000;
-    }
-  }
-}
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/assets/images/gym-hero.jpg');
+            background-size: cover;
+            background-position: center;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 1.5rem;
+            min-height: 40vh;
+            width: 100%;
+        }
 
-.auth-menu {
-  display: flex;
-  gap: 1.5rem;
-  align-items: center;
+        .hero-section h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 1rem;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
 
-  a {
-    color: white;
-    text-decoration: none;
-    font-size: 1.1rem;
-    transition: color 0.3s;
+        .hero-section p {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            margin-bottom: 1.5rem;
+        }
 
-    &:hover {
-      color: #ff0000;
-    }
-  }
-}
+        .main-button {
+            background-color: #ff0000;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
 
-.hero-section {
-  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/assets/images/gym-hero.jpg');
-  background-size: cover;
-  background-position: center;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 1.5rem;
-  min-height: 40vh;
-  width: 100%;
+        .main-button:hover {
+            background-color: #cc0000;
+        }
 
-  h1 {
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    margin-bottom: 1rem;
-    color: #ffffff;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  }
+        .memberships-section {
+            padding: 2rem 1rem;
+            background-color: #2a2a2a;
+            flex-shrink: 0;
+            width: 100%;
+        }
 
-  p {
-    font-size: clamp(1rem, 3vw, 1.5rem);
-    margin-bottom: 1.5rem;
-  }
-}
+        .memberships-section h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+        }
 
-.main-button {
-  background-color: #ff0000;
-  color: white;
-  padding: 0.8rem 1.5rem;
-  border: none;
-  border-radius: 5px;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
+        .membership-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
 
-  &:hover {
-    background-color: color.adjust(#ff0000, $lightness: -10%);
-  }
-}
+        .membership-card {
+            background-color: #333333;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.3s;
+        }
 
-.memberships-section {
-  padding: 2rem 1rem;
-  background-color: #2a2a2a;
-  flex-shrink: 0;
-  width: 100%;
+        .membership-card:hover {
+            transform: translateY(-5px);
+        }
 
-  h2 {
-    text-align: center;
-    margin-bottom: 1.5rem;
-    font-size: clamp(1.8rem, 4vw, 2.5rem);
-  }
+        .membership-card h3 {
+            color: #ff0000;
+            font-size: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
 
-  .membership-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    width: 100%;
-  }
+        .membership-card .price {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
 
-  .membership-card {
-    background-color: #333333;
-    border-radius: 10px;
-    padding: 1.5rem;
-    text-align: center;
-    transition: transform 0.3s;
+        .membership-card ul {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 1.5rem;
+        }
 
-    &:hover {
-      transform: translateY(-5px);
-    }
+        .membership-card ul li {
+            margin-bottom: 0.4rem;
+            font-size: 0.9rem;
+        }
 
-    h3 {
-      color: #ff0000;
-      font-size: 1.5rem;
-      margin-bottom: 0.8rem;
-    }
+        .footer {
+            background-color: #000000;
+            padding: 2rem 1rem;
+            text-align: center;
+            flex-shrink: 0;
+            width: 100%;
+        }
 
-    .price {
-      font-size: 1.8rem;
-      margin-bottom: 1rem;
-      color: white;
-    }
+        .footer .slogan {
+            font-size: clamp(1.3rem, 3vw, 2rem);
+            margin-bottom: 1.5rem;
+        }
 
-    ul {
-      list-style: none;
-      padding: 0;
-      margin-bottom: 1.5rem;
+        .footer .cta-button {
+            background-color: #ff0000;
+            color: white;
+            padding: 1rem 2rem;
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
 
-      li {
-        margin-bottom: 0.4rem;
-        font-size: 0.9rem;
-      }
-    }
-  }
-}
+        .footer .cta-button:hover {
+            background-color: #cc0000;
+        }
 
-.footer {
-  background-color: #000000;
-  padding: 2rem 1rem;
-  text-align: center;
-  flex-shrink: 0;
-  width: 100%;
+        /* Responsive para navegación */
+        @media (max-width: 768px) {
+            .header-navigation {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .navigation-menu,
+            .auth-menu {
+                gap: 1rem;
+            }
+        }
 
-  .slogan {
-    font-size: clamp(1.3rem, 3vw, 2rem);
-    margin-bottom: 1.5rem;
-  }
+        /* Media queries para diferentes alturas de pantalla */
+        @media (max-height: 700px) {
+            .hero-section {
+                min-height: 30vh;
+                padding: 1rem;
+            }
+            
+            .memberships-section {
+                padding: 1.5rem 1rem;
+            }
+            
+            .footer {
+                padding: 1.5rem 1rem;
+            }
+        }
 
-  .cta-button {
-    background-color: #ff0000;
-    color: white;
-    padding: 1rem 2rem;
-    font-size: clamp(1rem, 2.5vw, 1.3rem);
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-
-    &:hover {
-      background-color: color.adjust(#ff0000, $lightness: -10%);
-    }
-  }
-}
-
-// Responsive para navegación
-@media (max-width: 768px) {
-  .header-navigation,
-  .navigation-container {
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
-  }
-  
-  .navigation-menu,
-  .auth-menu {
-    gap: 1rem;
-  }
-}
-
-// Media queries para diferentes alturas de pantalla
-@media (max-height: 700px) {
-  .hero-section {
-    min-height: 30vh;
-    padding: 1rem;
-  }
-  
-  .memberships-section {
-    padding: 1.5rem 1rem;
-  }
-  
-  .footer {
-    padding: 1.5rem 1rem;
-  }
-}
-
-@media (min-height: 900px) {
-  .hero-section {
-    min-height: 50vh;
-  }
-}
+        @media (min-height: 900px) {
+            .hero-section {
+                min-height: 50vh;
+            }
+        }

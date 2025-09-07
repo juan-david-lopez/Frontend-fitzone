@@ -55,18 +55,30 @@ export class RegisterComponent {
   }
 
   onSubmit(): void {
-  localStorage.removeItem('token');
-  sessionStorage.removeItem('token');
+    // Limpiar tokens antiguos
+    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
 
-  if (this.registerForm.invalid) {
-    this.registerForm.markAllAsTouched();
-    return;
-  }
+    if (this.registerForm.invalid) {
+      this.registerForm.markAllAsTouched();
+      Object.keys(this.registerForm.controls).forEach(key => {
+        const control = this.registerForm.get(key);
+        if (control?.errors) {
+          console.log(`Error en campo ${key}:`, control.errors);
+        }
+      });
+      return;
+    }
 
-  this.isSubmitting = true;
-  const payload = { ...this.registerForm.value };
-  delete payload.confirmPassword;
-  delete payload.acceptTerms;
+    this.isSubmitting = true;
+    const payload = { ...this.registerForm.value };
+    delete payload.confirmPassword;
+    delete payload.acceptTerms;
+    
+    // Asegurarse de que las fechas estén en el formato correcto
+    if (payload.birthDate) {
+      payload.birthDate = new Date(payload.birthDate).toISOString().split('T')[0];
+    }
 
   this.authService.register(payload).subscribe({
     next: (response) => {
@@ -82,7 +94,17 @@ export class RegisterComponent {
     error: (err) => {
       console.error('❌ Error en registro:', err);
       this.isSubmitting = false;
-      alert('Error al registrar usuario');
+      
+      let errorMessage = 'Error al registrar usuario';
+      if (err.error?.message) {
+        errorMessage = err.error.message;
+      } else if (err.status === 500) {
+        errorMessage = 'Error interno del servidor. Por favor, inténtelo más tarde.';
+      } else if (err.status === 400) {
+        errorMessage = 'Datos inválidos. Por favor, revise la información ingresada.';
+      }
+      
+      alert(errorMessage);
     }
   });
 }

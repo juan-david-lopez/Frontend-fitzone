@@ -2,16 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
-// Mantén tu interfaz existente sin cambios grandes
-interface MembershipPlan {
-  id?: string;
-  name: string;
-  description: string;
-  price: number;
-  duration: number;
-  features: string[];
-  isPopular?: boolean;
-}
+import { MembershipPlan } from '../../../core/models/membership.model';
 
 interface CurrentMembership {
   name: string;
@@ -116,15 +107,44 @@ export class MembershipsComponent implements OnInit {
   }
 
   selectPlan(plan: MembershipPlan): void {
-  const isLoggedIn = localStorage.getItem('access_token'); 
-
-  if (!isLoggedIn) {
-    // No hay sesión → ir a registro
-    this.router.navigate(['/register'], { state: { selectedPlan: plan } });
-  } else {
-    // Ya tiene sesión → ir a pago directo
-    this.router.navigate(['/payment'], { state: { selectedPlan: plan } });
+    // Convertir el ID a número si es necesario
+    const processedPlan = {
+      ...plan,
+      id: plan.id || 'BASIC', // Usar un valor por defecto si id es undefined
+    };
+    
+    // Guardar el plan procesado en sessionStorage
+    sessionStorage.setItem('selectedPlan', JSON.stringify(processedPlan));
+    console.log('Plan guardado en sessionStorage:', processedPlan);
+    
+    const token = localStorage.getItem('token');
+    if (!token) {
+      // No hay sesión → ir a registro
+      this.router.navigate(['/register']);
+    } else {
+      // Ya tiene sesión → ir a pago directo
+      this.proceedToPayment(processedPlan);
+    }
   }
-}
+
+  proceedToPayment(selectedPlan: MembershipPlan) {
+    console.log('📍 Navegando a payment con plan:', selectedPlan);
+    
+    // Guardar en sessionStorage como respaldo
+    sessionStorage.setItem('selectedPlan', JSON.stringify(selectedPlan));
+    
+    // Navegar a la página de pago con el plan seleccionado
+    this.router.navigate(['/payment'], { 
+      state: { selectedPlan: selectedPlan } 
+    }).then(success => {
+      if (success) {
+        console.log('✅ Navegación exitosa a payment');
+      } else {
+        console.error('❌ Error en la navegación a payment');
+      }
+    }).catch(error => {
+      console.error('❌ Error al navegar a payment:', error);
+    });
+  }
 
 }
