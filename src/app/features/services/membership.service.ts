@@ -46,7 +46,7 @@ export interface MembershipResponse {
   providedIn: 'root'
 })
 export class MembershipService {
-  private apiUrl = 'https://desplieguefitzone.onrender.co/mmemberships';
+  private apiUrl = 'https://desplieguefitzone.onrender.co/memberships';
   private currentMembershipSubject = new BehaviorSubject<MembershipResponse | null>(null);
   currentMembership$ = this.currentMembershipSubject.asObservable();
 
