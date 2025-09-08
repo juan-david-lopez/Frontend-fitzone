@@ -45,7 +45,7 @@ export class WebSocketService implements OnDestroy {
     try {
       console.log('🔄 Inicializando conexión WebSocket...');
       
-      const socket = new SockJS('wss://desplieguefitzone.onrender.com/ws-memberships');
+      const socket = new SockJS('https://desplieguefitzone.onrender.com/ws-memberships');
       
       this.stompClient = new Client({
         webSocketFactory: () => socket,
