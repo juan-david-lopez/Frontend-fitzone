@@ -1,0 +1,15 @@
+
+{
+  "/api": {
+    "target": "https://desplieguefitzone.onrender.com",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/ws-memberships": {
+    "target": "https://desplieguefitzone.onrender.com",
+    "secure": true,
+    "changeOrigin": true,
+    "ws": true
+  }
+}
