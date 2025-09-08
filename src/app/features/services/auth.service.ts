@@ -28,7 +28,7 @@ export class AuthService {
   private readonly TOKEN_KEY = 'token';
   private readonly REFRESH_KEY = 'refresh_token';
   private readonly USER_KEY = 'user_info';
-  private readonly API_URL = 'http://localhost:8080';
+  private readonly API_URL = 'https://desplieguefitzone.onrender.com';
   private readonly OTP_TIMEOUT = 300000; // 5 minutos para el OTP
 
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.isBrowser() ? this.hasToken() : false);
